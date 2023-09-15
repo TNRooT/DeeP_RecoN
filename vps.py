@@ -23,7 +23,7 @@ def print_warning(message):
 def print_info(message):
     print(f"{CYAN}[INFO]{END} {message}")
 
-# 1 : Create Tools Directories
+#  : Create Tools Directories
 def create_tools_directory():
     current_directory = os.getcwd()
     tools_directory = os.path.join(current_directory, 'VPS', 'tools')
@@ -34,8 +34,8 @@ def create_tools_directory():
 
     return tools_directory
 
-# 2 : Create Wordlists Directories
-#def create_wordlists_directory():
+#  : Create Wordlists Directories
+def create_wordlists_directory():
     current_directory = os.getcwd()
     wordlists_directory = os.path.join(current_directory, 'VPS', 'wordlists')
 
@@ -45,7 +45,7 @@ def create_tools_directory():
 
     return wordlists_directory
 
-# 3 : Create Nuclei Templates Directories
+#  : Create Nuclei Templates Directories
 def create_Nuclei_Templates_directory():
     current_directory = os.getcwd()
     templates_directory = os.path.join(current_directory, 'VPS', 'Templates')
@@ -56,7 +56,7 @@ def create_Nuclei_Templates_directory():
 
     return templates_directory
 
-# 4 : Install requirements
+#  : Install requirements
 def install_requirements():
     print("Installing system requirements...")
     subprocess.run(["sudo", "apt-get", "update"])
@@ -66,7 +66,7 @@ def install_requirements():
     subprocess.run(["sudo", "apt", "install", "unzip" ,"-y"])
     subprocess.run([ "sudo" ,"apt-get",  "install",  "ruby-full" , "rubygems"])
 
-# 5 : Install Go
+#  : Install Go
 def install_go():
     print(f"{YELLOW}[SUBDOMAINS ENUMERATION]{RED}Golang installation in progress ...{YELLOW}")
 
@@ -745,7 +745,7 @@ def install_dontgo403(tools_directory):
         print_success(f"{GREEN}[SUCCESS] dontgo403 has been installed.{GREEN}")
     except Exception as e:
         print_error(f"{RED}[ERROR]An error occurred while installing dontgo403: {str(e)}{RED}")
-# 7 : Download Nuclei templates
+#  : Download Nuclei templates
 def install_nuclei_templates(templates_directory):
     user_choice = input("Do you want to download and install Nuclei templates? (yes/no): ").lower()
     
@@ -758,7 +758,21 @@ def install_nuclei_templates(templates_directory):
         print(f"{GREEN}[SUCCESS] Nuclei templates download complete.{GREEN}")
     else:
         print(f"{YELLOW} Skipping Nuclei templates download.{YELLOW}")
-# 6 : Install tools
+
+# 7 : Download Wordlists
+def install_wordlist(wordlists_directory):
+    user_choice = input("Do you want to download Wordlists? (yes/no): ").lower()
+    
+    if user_choice == "yes":
+        print(f"{CYAN}[INFO] Downloading Wordlists now...{CYAN}")
+        # Navigate to the Wordlists directory
+        os.chdir(wordlists_directory)
+        # Clone Wordlists repository
+        os.system('git clone https://github.com/TNRooT/DeeP_RecoN/tree/ce41a3dd332a8d0f6194425ce0755b7ab20fa1be/wordlists > /dev/null 2>&1')
+        print(f"{GREEN}[SUCCESS] Wordlists download complete.{GREEN}")
+    else:
+        print(f"{YELLOW} Skipping Wordlists download.{YELLOW}")
+#  : Install tools
 
 def install_tools():
     tools = [
@@ -864,23 +878,11 @@ def install_tools():
                 install_dontgo403(tools_directory)
             elif tool == "nuclei_template":
                 install_nuclei_templates()
+            elif tool == "wordlist":
+                install_wordlist()
         elif user_choice == "no":
             print(f"Skipping {tool} installation.")
-
-# Step 4: Install wordlists from github_subdomains GitHub
-#def install_wordlists(wordlists_directory):
-    #wordlists_directory = create_wordlists_directory
-    #user_choice = input("Do you want to install wordlists from GitHub? (yes/no): ").lower()
-    #if user_choice == "yes":
-        #print(f"{CYAN}[INFO] Download wordlist now .... {CYAN}")
-        # Navigate to the tools directory{tool}
-        #os.chdir(wordlists_directory)
-        #os.system('git clone url github > /dev/null 2>&1')
-        #print(f"{GREEN}[SUCCESS] Wordlists  Download complete.{GREEN}")
-    #else: print(f"{YELLOW} Skipping Wordlists  Download.{YELLOW}")
-
-
-# 8 : Exit
+#  : Exit
 def exit_script():
     print("Exiting the script...")
     exit()
@@ -891,9 +893,10 @@ def main():
     install_requirements()
     install_go()
     install_tools()
-    #install_wordlists()
     templates_directory = create_Nuclei_Templates_directory()
     install_nuclei_templates(templates_directory)
+    wordlists_directory = create_wordlists_directory()
+    install_wordlist(wordlists_directory)
     exit_script()
 
 if __name__ == "__main__":
